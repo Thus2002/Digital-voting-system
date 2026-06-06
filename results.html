@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Election Results{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Election Results</h1>
+  <p>Live blockchain-verified vote tally — {{ total }} total votes cast</p>
+</div>
+
+<div class="container" style="max-width:700px;">
+
+  {% if not results %}
+    <div class="card" style="text-align:center; padding:3rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;">📊</div>
+      <p style="color:var(--text2);">No votes have been cast yet.</p>
+    </div>
+  {% else %}
+    <!-- Winner -->
+    {% if phase == 'closed' and results %}
+    <div class="card" style="background:linear-gradient(135deg,rgba(124,92,191,0.2),rgba(88,166,255,0.1)); border-color:var(--purple); margin-bottom:1.5rem; text-align:center; padding:2rem;">
+      <div style="font-size:2.5rem; margin-bottom:0.5rem;">🏆</div>
+      <div style="font-size:0.8rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.25rem;">Winner</div>
+      <div style="font-size:1.75rem; font-weight:700;">{{ results[0].name }}</div>
+      <div style="color:var(--purple2); margin-top:0.25rem;">{{ results[0].votes }} votes ({{ results[0].percentage }}%)</div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="section-title">Vote Breakdown</div>
+      <div style="display:flex; flex-direction:column; gap:1.25rem;">
+        {% for r in results %}
+        <div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+            <span style="font-weight:600;">
+              {% if loop.index == 1 and phase == 'closed' %}🥇{% elif loop.index == 2 and phase == 'closed' %}🥈{% elif loop.index == 3 and phase == 'closed' %}🥉{% endif %}
+              {{ r.name }}
+            </span>
+            <span style="color:var(--text2); font-size:0.875rem;">{{ r.votes }} votes — <strong style="color:var(--text);">{{ r.percentage }}%</strong></span>
+          </div>
+          <div class="vote-bar-wrap">
+            <div class="vote-bar" style="width: {{ r.percentage }}%;"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:center; gap:0.75rem; margin-top:1.5rem;">
+      <a href="{{ url_for('view_blockchain') }}" class="btn btn-ghost">⛓️ Verify on Blockchain</a>
+      <a href="{{ url_for('index') }}" class="btn btn-primary">← Home</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
