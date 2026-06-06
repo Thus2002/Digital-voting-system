@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Blockchain E-Voting System{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Blockchain E-Voting System</h1>
+  <p>Secure, transparent, and decentralized voting powered by blockchain technology</p>
+</div>
+
+<div class="container">
+
+  {% if session.get('admin') %}
+  <!-- Admin view -->
+  <div style="margin-bottom:1.25rem; display:flex; align-items:center; gap:0.75rem;">
+    <span class="section-title" style="margin:0;">Admin Panel</span>
+    <span class="badge badge-blue">Administrator</span>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Analytics</h3>
+      <p>View real-time voting analytics</p>
+      <a href="{{ url_for('results') }}" class="btn btn-primary btn-sm">Analytics</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗳️</div>
+      <h3>Manage Election</h3>
+      <p>Control election phase and settings</p>
+      <a href="{{ url_for('admin_panel') }}" class="btn btn-blue btn-sm">Manage Election</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⛓️</div>
+      <h3>Blockchain</h3>
+      <p>Inspect the blockchain ledger</p>
+      <a href="{{ url_for('view_blockchain') }}" class="btn btn-ghost btn-sm">View Chain</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔓</div>
+      <h3>Logout</h3>
+      <p>End your admin session securely</p>
+      <a href="{{ url_for('logout') }}" class="btn btn-red btn-sm">Logout</a>
+    </div>
+  </div>
+
+  {% else %}
+  <!-- Public view -->
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <h3>Voter Login</h3>
+      <p>Access your voting account</p>
+      <a href="{{ url_for('voter_login') }}" class="btn btn-primary btn-sm">Login</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📝</div>
+      <h3>Register</h3>
+      <p>Create a new voter account</p>
+      <a href="{{ url_for('register') }}" class="btn btn-blue btn-sm">Register</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>View Results</h3>
+      <p>See current voting results</p>
+      <a href="{{ url_for('results') }}" class="btn btn-green btn-sm">Results</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⛓️</div>
+      <h3>Blockchain</h3>
+      <p>Validate blockchain integrity</p>
+      <a href="{{ url_for('view_blockchain') }}" class="btn btn-ghost btn-sm">Validate</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h3>Admin</h3>
+      <p>Access administrative functions</p>
+      <a href="{{ url_for('admin_login') }}" class="btn btn-ghost btn-sm">Admin Login</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Info section -->
+  <div style="margin-top: 3rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:1rem;">
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1.25rem;">
+      <div style="font-size:1.25rem; margin-bottom:0.5rem;">🔒</div>
+      <div style="font-weight:600; margin-bottom:0.25rem;">Immutable Records</div>
+      <div style="color:var(--text2); font-size:0.85rem;">Every vote is cryptographically sealed on the blockchain — tamper-proof and permanent.</div>
+    </div>
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1.25rem;">
+      <div style="font-size:1.25rem; margin-bottom:0.5rem;">👁️</div>
+      <div style="font-weight:600; margin-bottom:0.25rem;">Full Transparency</div>
+      <div style="color:var(--text2); font-size:0.85rem;">Anyone can verify the chain integrity in real time without compromising voter privacy.</div>
+    </div>
+    <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:1.25rem;">
+      <div style="font-size:1.25rem; margin-bottom:0.5rem;">⚡</div>
+      <div style="font-weight:600; margin-bottom:0.25rem;">Instant Results</div>
+      <div style="color:var(--text2); font-size:0.85rem;">Results are tallied in real-time as votes are confirmed on the blockchain.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
