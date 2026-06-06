@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Cast Your Vote{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Cast Your Vote</h1>
+  <p>Welcome, {{ session.voter_name }} — your vote is anonymous and secure</p>
+</div>
+
+<div class="container" style="max-width:600px;">
+
+  {% if has_voted %}
+    <div class="card" style="text-align:center; padding:2.5rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
+      <h2 style="margin-bottom:0.5rem;">Vote Recorded!</h2>
+      <p style="color:var(--text2);">Your vote has been permanently recorded on the blockchain.</p>
+      <div style="margin-top:1.5rem; display:flex; gap:0.75rem; justify-content:center;">
+        <a href="{{ url_for('results') }}" class="btn btn-primary">View Results</a>
+        <a href="{{ url_for('view_blockchain') }}" class="btn btn-ghost">View Blockchain</a>
+      </div>
+    </div>
+
+  {% elif phase != 'active' %}
+    <div class="card" style="text-align:center; padding:2.5rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;">⏳</div>
+      <h2 style="margin-bottom:0.5rem;">Voting Not Active</h2>
+      <p style="color:var(--text2);">
+        {% if phase == 'setup' %}The election is still being set up. Please wait.
+        {% else %}The election has closed. Check the results!{% endif %}
+      </p>
+      {% if phase == 'closed' %}
+      <a href="{{ url_for('results') }}" class="btn btn-primary" style="margin-top:1.5rem;">View Results</a>
+      {% endif %}
+    </div>
+
+  {% elif not candidates %}
+    <div class="card" style="text-align:center; padding:2.5rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;">📋</div>
+      <p style="color:var(--text2);">No candidates have been added yet.</p>
+    </div>
+
+  {% else %}
+    <form method="POST">
+      <div class="section-title">Select a Candidate</div>
+      <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem;">
+        {% for c in candidates %}
+        <label style="display:flex; align-items:center; gap:1rem; background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; cursor:pointer; transition:border-color 0.2s; text-transform:none; letter-spacing:0; font-size:1rem; color:var(--text); font-weight:500;">
+          <input type="radio" name="candidate" value="{{ c }}" required
+                 style="width:18px;height:18px;accent-color:var(--purple);"/>
+          {{ c }}
+        </label>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" style="padding:12px;">🗳️ Submit Vote</button>
+      <p style="color:var(--text2); font-size:0.8rem; text-align:center; margin-top:0.75rem;">This action is irreversible. Your vote will be permanently recorded.</p>
+    </form>
+  {% endif %}
+
+</div>
+{% endblock %}
