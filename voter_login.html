@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Admin Panel</h1>
+  <p>Manage candidates, monitor blockchain, and control the election</p>
+</div>
+
+<div class="container">
+
+  <!-- Top actions -->
+  <div style="display:flex; gap:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; align-items:center;">
+    <a href="{{ url_for('results') }}" class="btn btn-blue btn-sm">📊 Analytics</a>
+    <a href="{{ url_for('view_blockchain') }}" class="btn btn-ghost btn-sm">⛓️ View Blocks</a>
+    <a href="{{ url_for('admin_users') }}" class="btn btn-ghost btn-sm">👥 View Users</a>
+    <a href="{{ url_for('logout') }}" class="btn btn-red btn-sm">🔓 Logout</a>
+
+    <!-- Phase control -->
+    <form method="POST" style="margin-left:auto; display:flex; gap:0.5rem; align-items:center;">
+      <input type="hidden" name="action" value="set_phase"/>
+      <select name="phase" style="width:auto; padding:6px 12px; font-size:0.8rem;">
+        <option value="setup" {% if phase == 'setup' %}selected{% endif %}>Setup</option>
+        <option value="active" {% if phase == 'active' %}selected{% endif %}>Active</option>
+        <option value="closed" {% if phase == 'closed' %}selected{% endif %}>Closed</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm">Set Phase</button>
+    </form>
+  </div>
+
+  <!-- Current phase -->
+  <div style="margin-bottom:1.5rem;">
+    Election Phase:
+    <span class="phase-pill phase-{{ phase }}">
+      <span class="dot"></span>
+      {{ phase | title }}
+    </span>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+
+    <!-- Blockchain Status -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="section-title">Blockchain Status</div>
+      <div class="stat-grid">
+        <div class="stat-tile">
+          <div class="stat-val">{{ stats.blocks }}</div>
+          <div class="stat-label">Blocks</div>
+        </div>
+        <div class="stat-tile blue">
+          <div class="stat-val">{{ stats.pending }}</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-tile {% if stats.chain_valid %}green{% else %}red{% endif %}">
+          <div class="stat-val">{{ 'True' if stats.chain_valid else 'False' }}</div>
+          <div class="stat-label">Chain Valid</div>
+        </div>
+        <div class="stat-tile teal">
+          <div class="stat-val">{{ stats.registered_voters }}</div>
+          <div class="stat-label">Registered Voters</div>
+        </div>
+        <div class="stat-tile" style="background:var(--yellow); color:#000;">
+          <div class="stat-val">{{ stats.votes_cast }}</div>
+          <div class="stat-label">Votes Cast</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Candidates list -->
+    <div class="card">
+      <div class="section-title">Candidates ({{ candidates | length }})</div>
+      {% if candidates %}
+        <table>
+          <thead>
+            <tr><th>#</th><th>Name</th></tr>
+          </thead>
+          <tbody>
+            {% for c in candidates %}
+            <tr>
+              <td style="color:var(--text2);">{{ loop.index }}</td>
+              <td>{{ c }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p style="color:var(--text2); font-size:0.875rem;">No candidates added yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Manage candidates -->
+    <div class="card">
+      <div class="section-title">Manage Candidates</div>
+
+      <form method="POST" style="margin-bottom:1rem;">
+        <input type="hidden" name="action" value="add_candidate"/>
+        <div class="form-group">
+          <label>Candidate Name</label>
+          <input type="text" name="candidate_name" placeholder="Enter candidate name" required/>
+        </div>
+        <button type="submit" class="btn btn-green btn-sm">＋ Add Candidate</button>
+      </form>
+
+      <hr class="divider"/>
+
+      <form method="POST">
+        <input type="hidden" name="action" value="remove_candidate"/>
+        <div class="form-group">
+          <label>Remove Candidate</label>
+          <input type="text" name="candidate_name" placeholder="Exact name to remove"/>
+        </div>
+        <button type="submit" class="btn btn-red btn-sm">－ Remove Candidate</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div style="margin-top:1.5rem; text-align:center;">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">← Back to Home</a>
+  </div>
+
+</div>
+{% endblock %}
